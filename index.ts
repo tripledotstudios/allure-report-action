@@ -16,9 +16,8 @@ import {
     downloadAllure,
     extractAllure,
 } from './src/allure.js'
-import { getBranchName } from './src/helpers.js'
 import { isFileExist } from './src/isFileExists.js'
-import { cleanupOutdatedBranches, cleanupOutdatedReports } from './src/cleanup.js'
+import { cleanupOutdatedReports } from './src/cleanup.js'
 import { writeLatestReport } from './src/writeLatest.js'
 
 const baseDir = 'allure-action'
@@ -34,12 +33,10 @@ try {
     const ghPagesPath = core.getInput('gh_pages')
     const reportId = core.getInput('report_id')
     const listDirs = core.getInput('list_dirs') == 'true'
-    const listDirsBranch = core.getInput('list_dirs_branch') == 'true'
     const branchCleanupEnabled = core.getInput('branch_cleanup_enabled') == 'true'
     const maxReports = parseInt(core.getInput('max_reports'), 10)
-    const branchName = getBranchName(github.context.ref, github.context.payload.pull_request)
     const ghPagesBaseDir = path.join(ghPagesPath, baseDir)
-    const reportBaseDir = path.join(ghPagesBaseDir, branchName, reportId)
+    const reportBaseDir = path.join(ghPagesBaseDir, reportId)
 
     /**
      * `runId` is unique but won't change on job re-run
@@ -52,7 +49,7 @@ try {
     // urls
     const githubActionRunUrl = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId}`
     const ghPagesUrl = `https://${github.context.repo.owner}.github.io/${github.context.repo.repo}`
-    const ghPagesBaseUrl = `${ghPagesUrl}/${baseDir}/${branchName}/${reportId}`.replaceAll(' ', '%20')
+    const ghPagesBaseUrl = `${ghPagesUrl}/${baseDir}/${reportId}`.replaceAll(' ', '%20')
     const ghPagesReportUrl = `${ghPagesBaseUrl}/${runUniqueId}`.replaceAll(' ', '%20')
 
     // log
@@ -63,12 +60,10 @@ try {
         runUniqueId,
         ref: github.context.ref,
         repo: github.context.repo,
-        branchName,
         reportBaseDir,
         reportDir,
         report_url: ghPagesReportUrl,
         listDirs,
-        listDirsBranch,
         branchCleanupEnabled,
         maxReports,
     })
@@ -88,10 +83,6 @@ try {
     // action
     await io.mkdirP(reportBaseDir)
 
-    // cleanup (should be before the folder listing)
-    if (branchCleanupEnabled) {
-        await cleanupOutdatedBranches(ghPagesBaseDir)
-    }
     if (maxReports > 0) {
         await cleanupOutdatedReports(ghPagesBaseDir, maxReports)
     }
@@ -102,9 +93,6 @@ try {
             await writeFolderListing(ghPagesPath, '.')
         }
         await writeFolderListing(ghPagesPath, baseDir)
-    }
-    if (listDirsBranch) {
-        await writeFolderListing(ghPagesPath, path.join(baseDir, branchName))
     }
 
     // process allure report
