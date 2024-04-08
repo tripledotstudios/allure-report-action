@@ -37,6 +37,7 @@ try {
     const maxReports = parseInt(core.getInput('max_reports'), 10)
     const ghPagesBaseDir = path.join(ghPagesPath, baseDir)
     const reportBaseDir = path.join(ghPagesBaseDir, reportId)
+    const repo = core.getInput('repo')
 
     /**
      * `runId` is unique but won't change on job re-run
@@ -47,7 +48,7 @@ try {
     const reportDir = path.join(reportBaseDir, runUniqueId)
 
     // urls
-    const githubActionRunUrl = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId}`
+    const githubActionRunUrl = `https://github.com/${github.context.repo.owner}/${repo.split('/').pop()}/actions/runs/${github.context.runId}`
     const ghPagesUrl = `https://${github.context.repo.owner}.github.io/${github.context.repo.repo}`
     const ghPagesBaseUrl = `${ghPagesUrl}/${baseDir}/${reportId}`.replaceAll(' ', '%20')
     const ghPagesReportUrl = `${ghPagesBaseUrl}/${runUniqueId}`.replaceAll(' ', '%20')
