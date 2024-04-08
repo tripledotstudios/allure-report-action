@@ -49,7 +49,7 @@ try {
 
     // urls
     const githubActionRunUrl = `https://github.com/${github.context.repo.owner}/${repo.split('/').pop()}/actions/runs/${github.context.runId}`
-    const ghPagesUrl = `https://${github.context.repo.owner}.github.io/${github.context.repo.repo}`
+    const ghPagesUrl = `https://${github.context.repo.owner}.github.io/${repo.split('/').pop()}`
     const ghPagesBaseUrl = `${ghPagesUrl}/${baseDir}/${reportId}`.replaceAll(' ', '%20')
     const ghPagesReportUrl = `${ghPagesBaseUrl}/${runUniqueId}`.replaceAll(' ', '%20')
 
@@ -60,7 +60,7 @@ try {
         report_id: reportId,
         runUniqueId,
         ref: github.context.ref,
-        repo: github.context.repo,
+        repo: repo,
         reportBaseDir,
         reportDir,
         report_url: ghPagesReportUrl,

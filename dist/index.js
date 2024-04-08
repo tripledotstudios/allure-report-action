@@ -36958,7 +36958,7 @@ try {
     const reportDir = path__WEBPACK_IMPORTED_MODULE_0__.join(reportBaseDir, runUniqueId);
     // urls
     const githubActionRunUrl = `https://github.com/${_actions_github__WEBPACK_IMPORTED_MODULE_2__.context.repo.owner}/${repo.split('/').pop()}/actions/runs/${_actions_github__WEBPACK_IMPORTED_MODULE_2__.context.runId}`;
-    const ghPagesUrl = `https://${_actions_github__WEBPACK_IMPORTED_MODULE_2__.context.repo.owner}.github.io/${_actions_github__WEBPACK_IMPORTED_MODULE_2__.context.repo.repo}`;
+    const ghPagesUrl = `https://${_actions_github__WEBPACK_IMPORTED_MODULE_2__.context.repo.owner}.github.io/${repo.split('/').pop()}`;
     const ghPagesBaseUrl = `${ghPagesUrl}/${baseDir}/${reportId}`.replaceAll(' ', '%20');
     const ghPagesReportUrl = `${ghPagesBaseUrl}/${runUniqueId}`.replaceAll(' ', '%20');
     // log
@@ -36968,7 +36968,7 @@ try {
         report_id: reportId,
         runUniqueId,
         ref: _actions_github__WEBPACK_IMPORTED_MODULE_2__.context.ref,
-        repo: _actions_github__WEBPACK_IMPORTED_MODULE_2__.context.repo,
+        repo: repo,
         reportBaseDir,
         reportDir,
         report_url: ghPagesReportUrl,
