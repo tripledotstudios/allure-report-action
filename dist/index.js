@@ -40595,23 +40595,16 @@ const cleanupOutdatedReports = async (ghPagesBaseDir, maxReports) => {
         const localBranches = (await fs_promises__WEBPACK_IMPORTED_MODULE_1__.readdir(ghPagesBaseDir, { withFileTypes: true })).filter((d) => d.isDirectory()).map((d) => d.name);
         // branches
         for (const localBranch of localBranches) {
-            const reports = (await fs_promises__WEBPACK_IMPORTED_MODULE_1__.readdir(path__WEBPACK_IMPORTED_MODULE_0__.join(ghPagesBaseDir, localBranch), { withFileTypes: true }))
+            const runs = (await fs_promises__WEBPACK_IMPORTED_MODULE_1__.readdir(path__WEBPACK_IMPORTED_MODULE_0__.join(ghPagesBaseDir, localBranch), { withFileTypes: true }))
                 .filter((d) => d.isDirectory())
                 .map((d) => d.name);
-            // report per branch
-            for (const reportName of reports) {
-                const runs = (await fs_promises__WEBPACK_IMPORTED_MODULE_1__.readdir(path__WEBPACK_IMPORTED_MODULE_0__.join(ghPagesBaseDir, localBranch, reportName), { withFileTypes: true }))
-                    .filter((d) => d.isDirectory())
-                    .map((d) => d.name);
-                // run per report
-                if (runs.length > maxReports) {
-                    runs.sort();
-                    while (runs.length > maxReports) {
-                        await fs_promises__WEBPACK_IMPORTED_MODULE_1__.rm(path__WEBPACK_IMPORTED_MODULE_0__.join(ghPagesBaseDir, localBranch, reportName, runs.shift()), {
-                            recursive: true,
-                            force: true,
-                        });
-                    }
+            if (runs.length > maxReports) {
+                runs.sort();
+                while (runs.length > maxReports) {
+                    await fs_promises__WEBPACK_IMPORTED_MODULE_1__.rm(path__WEBPACK_IMPORTED_MODULE_0__.join(ghPagesBaseDir, localBranch, runs.shift()), {
+                        recursive: true,
+                        force: true,
+                    });
                 }
             }
         }

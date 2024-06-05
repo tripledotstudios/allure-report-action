@@ -7,25 +7,17 @@ export const cleanupOutdatedReports = async (ghPagesBaseDir: string, maxReports:
 
         // branches
         for (const localBranch of localBranches) {
-            const reports = (await fs.readdir(path.join(ghPagesBaseDir, localBranch), { withFileTypes: true }))
+            const runs = (await fs.readdir(path.join(ghPagesBaseDir, localBranch), { withFileTypes: true }))
                 .filter((d) => d.isDirectory())
                 .map((d) => d.name)
 
-            // report per branch
-            for (const reportName of reports) {
-                const runs = (await fs.readdir(path.join(ghPagesBaseDir, localBranch, reportName), { withFileTypes: true }))
-                    .filter((d) => d.isDirectory())
-                    .map((d) => d.name)
-
-                // run per report
-                if (runs.length > maxReports) {
-                    runs.sort()
-                    while (runs.length > maxReports) {
-                        await fs.rm(path.join(ghPagesBaseDir, localBranch, reportName, runs.shift() as string), {
-                            recursive: true,
-                            force: true,
-                        })
-                    }
+            if (runs.length > maxReports) {
+                runs.sort()
+                while (runs.length > maxReports) {
+                    await fs.rm(path.join(ghPagesBaseDir, localBranch, runs.shift() as string), {
+                        recursive: true,
+                        force: true,
+                    })
                 }
             }
         }
