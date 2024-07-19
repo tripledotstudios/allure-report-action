@@ -12,7 +12,11 @@ export const cleanupOutdatedReports = async (ghPagesBaseDir: string, maxReports:
                 .map((d) => d.name)
 
             if (runs.length > maxReports) {
-                runs.sort()
+                runs.sort((a, b) => {
+                    const timestampA = parseInt(a.split('_')[1]);
+                    const timestampB = parseInt(b.split('_')[1]);
+                    return timestampA - timestampB;
+                });
                 while (runs.length > maxReports) {
                     await fs.rm(path.join(ghPagesBaseDir, localBranch, runs.shift() as string), {
                         recursive: true,

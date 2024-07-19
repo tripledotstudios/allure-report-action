@@ -40599,7 +40599,11 @@ const cleanupOutdatedReports = async (ghPagesBaseDir, maxReports) => {
                 .filter((d) => d.isDirectory())
                 .map((d) => d.name);
             if (runs.length > maxReports) {
-                runs.sort();
+                runs.sort((a, b) => {
+                    const timestampA = parseInt(a.split('_')[1]);
+                    const timestampB = parseInt(b.split('_')[1]);
+                    return timestampA - timestampB;
+                });
                 while (runs.length > maxReports) {
                     await fs_promises__WEBPACK_IMPORTED_MODULE_1__.rm(path__WEBPACK_IMPORTED_MODULE_0__.join(ghPagesBaseDir, localBranch, runs.shift()), {
                         recursive: true,
